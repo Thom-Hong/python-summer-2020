@@ -1,13 +1,13 @@
 import pygame, random, sys
 from pygame.locals import *
 
-WINDOWWIDTH = 700
-WINDOWHEIGHT = 700
+WINDOWWIDTH = 600
+WINDOWHEIGHT = 600
 TEXTCOLOR = (0, 0, 0)
 BACKGROUNDCOLOR = (255, 255, 255)
 FPS = 60
 BADDIEMINSIZE = 10
-BADDIEMAXSIZE = 45
+BADDIEMAXSIZE = 40
 BADDIEMINSPEED = 1
 BADDIEMAXSPEED = 8
 ADDNEWBADDIERATE = 6
@@ -33,6 +33,12 @@ def playerHasHitBaddie(playerRect, baddies):
             return True
     return False
 
+def baddieHasHitPlayer(phat, baddies):
+    for b in baddies:
+        if phat.colliderect(b['rect']):
+            return True
+    return False
+
 def drawText(text, font, surface, x, y):
     textobj = font.render(text, 1, TEXTCOLOR)
     textrect = textobj.get_rect()
@@ -52,11 +58,12 @@ font = pygame.font.SysFont(None, 48)
 # Set up sounds.
 gameOverSound = pygame.mixer.Sound('gameover.wav')
 pygame.mixer.music.load('background.mid')
-
 # Set up images.
 playerImage = pygame.image.load('player.png')
 playerRect = playerImage.get_rect()
 baddieImage = pygame.image.load('baddie.png')
+
+
 
 # Show the "Start" screen.
 windowSurface.fill(BACKGROUNDCOLOR)
@@ -164,6 +171,12 @@ while True:
         # Draw the game world on the window.
         windowSurface.fill(BACKGROUNDCOLOR)
 
+        #platform
+        black = (0,0,0)
+        phat = pygame.draw.line(windowSurface, black, (250,300), (350,300), 5)
+        if baddieHasHitPlayer(phat, baddies):
+            baddies.remove(b)
+            
         # Draw the score and top score.
         drawText('Score: %s' % (score), font, windowSurface, 10, 0)
         drawText('Top Score: %s' % (topScore), font, windowSurface, 10, 40)
