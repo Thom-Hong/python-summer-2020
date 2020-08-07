@@ -1,7 +1,5 @@
 import pygame, random, sys
 from pygame.locals import *
-# Set up pygame
-pygame.init()
 
 WINDOWWIDTH = 600
 WINDOWHEIGHT = 600
@@ -47,7 +45,8 @@ def drawText(text, font, surface, x, y):
     textrect.topleft = (x, y)
     surface.blit(textobj, textrect)
 
-# Set up the window, and the mouse cursor.
+# Set up the window, pygame, and the mouse cursor.
+pygame.init()
 mainClock = pygame.time.Clock()
 windowSurface = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT))
 pygame.display.set_caption('Dodger')
