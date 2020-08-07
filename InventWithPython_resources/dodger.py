@@ -163,22 +163,17 @@ while True:
                 b['rect'].move_ip(0, -5)
             elif slowCheat:
                 b['rect'].move_ip(0, 1)
-        #platform
-        black = (0,0,0)
-        phat = pygame.draw.rect(windowSurface, black, (50, 300, 175, 30))
-        phat2 = pygame.draw.rect(windowSurface, black, (300, 300, 175, 30))
-        if baddieHasHitPlayer(phat, baddies):
-            baddies.remove(b)
-        if baddieHasHitPlayer(phat2, baddies):
-            baddies.remove(b)
-
+        
         # Delete baddies that have fallen past the bottom.
         for b in baddies[:]:
             if b['rect'].top > WINDOWHEIGHT:
                 baddies.remove(b)
 
-        # Draw the game world on the window.
+        # Draw the game world on the window and draws platforms. 
         windowSurface.fill(BACKGROUNDCOLOR)
+        black = (0,0,0)
+        rect1 = pygame.draw.rect(windowSurface, black, (50, 300, 100, 30))
+        rect2 = pygame.draw.rect(windowSurface, black, (300, 300, 100, 30))
         # Draw the score and top score.
         drawText('Score: %s' % (score), font, windowSurface, 10, 0)
         drawText('Top Score: %s' % (topScore), font, windowSurface, 10, 40)
