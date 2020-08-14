@@ -58,6 +58,7 @@ font = pygame.font.SysFont(None, 48)
 # Set up sounds.
 gameOverSound = pygame.mixer.Sound('gameover.wav')
 pygame.mixer.music.load('background.mid')
+
 # Set up images.
 playerImage = pygame.image.load('player.png')
 playerRect = playerImage.get_rect()
@@ -173,7 +174,7 @@ while True:
 
         #platform
         black = (0,0,0)
-        phat = pygame.draw.line(windowSurface, black, (250,300), (350,300), 5)
+        phat = pygame.draw.rect(windowSurface, black, (50, 300, 50, 20))
         if baddieHasHitPlayer(phat, baddies):
             baddies.remove(b)
             
