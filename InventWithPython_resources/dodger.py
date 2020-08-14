@@ -10,7 +10,7 @@ BADDIEMINSIZE = 10
 BADDIEMAXSIZE = 40
 BADDIEMINSPEED = 1
 BADDIEMAXSPEED = 8
-ADDNEWBADDIERATE = 6
+ADDNEWBADDIERATE = 10
 PLAYERMOVERATE = 5
 
 def terminate():
@@ -73,13 +73,18 @@ drawText('Press a key to start.', font, windowSurface, (WINDOWWIDTH / 3) - 30, (
 pygame.display.update()
 waitForPlayerToPressKey()
 
+# Set up keyboard variables.
+moveLeft = False
+moveRight = False
+moveUp = False
+moveDown = False
+
 topScore = 0
 while True:
     # Set up the start of the game.
     baddies = []
     score = 0
     playerRect.topleft = (WINDOWWIDTH / 2, WINDOWHEIGHT - 50)
-    moveLeft = moveRight = moveUp = moveDown = False
     reverseCheat = slowCheat = False
     baddieAddCounter = 0
     pygame.mixer.music.play(-1, 0.0)
@@ -172,8 +177,18 @@ while True:
         # Draw the game world on the window and draws platforms. 
         windowSurface.fill(BACKGROUNDCOLOR)
         black = (0,0,0)
-        rect1 = pygame.draw.rect(windowSurface, black, (50, 300, 100, 30))
-        rect2 = pygame.draw.rect(windowSurface, black, (300, 300, 100, 30))
+        rect1 = pygame.draw.rect(windowSurface, black, (50, 500, 200, 30))
+        rect2 = pygame.draw.rect(windowSurface, black, (350, 500, 200, 30))
+        for b in baddies[:]:
+            if rect1.colliderect(b['rect']) or rect2.colliderect(b['rect']):
+                baddies.remove(b)
+        if not reverseCheat and not slowCheat:
+            playerRect.move_ip(0, PLAYERMOVERATE)
+        elif reverseCheat:
+            playerRect.move_ip(0, -5)
+        elif slowCheat:
+            playerRect.move_ip(0, 1)
+                                                                                  
         # Draw the score and top score.
         drawText('Score: %s' % (score), font, windowSurface, 10, 0)
         drawText('Top Score: %s' % (topScore), font, windowSurface, 10, 40)
