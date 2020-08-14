@@ -10,7 +10,7 @@ BADDIEMINSIZE = 10
 BADDIEMAXSIZE = 40
 BADDIEMINSPEED = 1
 BADDIEMAXSPEED = 8
-ADDNEWBADDIERATE = 10
+ADDNEWBADDIERATE = 12
 PLAYERMOVERATE = 5
 
 def terminate():
@@ -50,7 +50,7 @@ pygame.init()
 mainClock = pygame.time.Clock()
 windowSurface = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT))
 pygame.display.set_caption('Dodger')
-pygame.mouse.set_visible(False)
+#pygame.mouse.set_visible(False)
 
 # Set up the fonts.
 font = pygame.font.SysFont(None, 48)
@@ -84,7 +84,7 @@ while True:
     # Set up the start of the game.
     baddies = []
     score = 0
-    playerRect.topleft = (WINDOWWIDTH / 2, WINDOWHEIGHT - 50)
+    playerRect.topleft = (150, 460)
     reverseCheat = slowCheat = False
     baddieAddCounter = 0
     pygame.mixer.music.play(-1, 0.0)
@@ -150,15 +150,15 @@ while True:
 
             baddies.append(newBaddie)
 
-        # Move the player around.
-        if moveLeft and playerRect.left > 0:
-            playerRect.move_ip(-1 * PLAYERMOVERATE, 0)
-        if moveRight and playerRect.right < WINDOWWIDTH:
-            playerRect.move_ip(PLAYERMOVERATE, 0)
-        if moveUp and playerRect.top > 0:
-            playerRect.move_ip(0, -1 * PLAYERMOVERATE)
+        # Move the player.
         if moveDown and playerRect.bottom < WINDOWHEIGHT:
-            playerRect.move_ip(0, PLAYERMOVERATE)
+            playerRect.top += PLAYERMOVERATE
+        if moveUp and playerRect.top > 0:
+            playerRect.top -= PLAYERMOVERATE
+        if moveLeft and playerRect.left > 0:
+            playerRect.left -= PLAYERMOVERATE
+        if moveRight and playerRect.right < WINDOWWIDTH:
+            playerRect.right += PLAYERMOVERATE
 
         # Move the baddies down.
         for b in baddies:
@@ -182,12 +182,6 @@ while True:
         for b in baddies[:]:
             if rect1.colliderect(b['rect']) or rect2.colliderect(b['rect']):
                 baddies.remove(b)
-        if not reverseCheat and not slowCheat:
-            playerRect.move_ip(0, PLAYERMOVERATE)
-        elif reverseCheat:
-            playerRect.move_ip(0, -5)
-        elif slowCheat:
-            playerRect.move_ip(0, 1)
                                                                                   
         # Draw the score and top score.
         drawText('Score: %s' % (score), font, windowSurface, 10, 0)
