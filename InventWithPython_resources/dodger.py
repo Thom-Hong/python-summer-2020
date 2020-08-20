@@ -1,4 +1,4 @@
-import pygame, random, sys
+import pygame, random, sys, time
 from pygame.locals import *
 
 WINDOWWIDTH = 600
@@ -133,10 +133,6 @@ while True:
                 if event.key == K_DOWN or event.key == K_s:
                     moveDown = False
 
-            if event.type == MOUSEMOTION:
-                # If the mouse moves, move the player where to the cursor.
-                playerRect.centerx = event.pos[0]
-                playerRect.centery = event.pos[1]
         # Add new baddies at the top of the screen, if needed.
         if not reverseCheat and not slowCheat:
             baddieAddCounter += 1
@@ -149,16 +145,6 @@ while True:
                         }
 
             baddies.append(newBaddie)
-
-        # Move the player.
-        if moveDown and playerRect.bottom < WINDOWHEIGHT:
-            playerRect.top += PLAYERMOVERATE
-        if moveUp and playerRect.top > 0:
-            playerRect.top -= PLAYERMOVERATE
-        if moveLeft and playerRect.left > 0:
-            playerRect.left -= PLAYERMOVERATE
-        if moveRight and playerRect.right < WINDOWWIDTH:
-            playerRect.right += PLAYERMOVERATE
 
         # Move the baddies down.
         for b in baddies:
@@ -177,11 +163,31 @@ while True:
         # Draw the game world on the window and draws platforms. 
         windowSurface.fill(BACKGROUNDCOLOR)
         black = (0,0,0)
-        rect1 = pygame.draw.rect(windowSurface, black, (50, 500, 200, 30))
-        rect2 = pygame.draw.rect(windowSurface, black, (350, 500, 200, 30))
+        rect1 = pygame.draw.rect(windowSurface, black, (50, 525, 200, 30))
+        rect2 = pygame.draw.rect(windowSurface, black, (350, 525, 200, 30))
         for b in baddies[:]:
             if rect1.colliderect(b['rect']) or rect2.colliderect(b['rect']):
                 baddies.remove(b)
+
+        # Move the player.
+        if playerRect.colliderect(rect1) == True or playerRect.colliderect(rect2) == True:
+            if moveUp and playerRect.top > 0 :
+                for x in range(25):
+                    playerRect.top -= 4.2
+                    time.sleep(0.000000000001)
+        if moveLeft and playerRect.left > 0:
+            playerRect.left -= PLAYERMOVERATE
+        if moveRight and playerRect.right < WINDOWWIDTH:
+            playerRect.right += PLAYERMOVERATE
+            
+        #Implements gravity in game.
+        if playerRect.colliderect(rect1) == False and playerRect.colliderect(rect2) == False:
+            if not reverseCheat and not slowCheat:
+                playerRect.move_ip(0, PLAYERMOVERATE - 1.5)
+            elif reverseCheat:
+                playerRect.move_ip(0, -5)
+            elif slowCheat:
+                playerRect.move_ip(0, 1)
                                                                                   
         # Draw the score and top score.
         drawText('Score: %s' % (score), font, windowSurface, 10, 0)
@@ -196,8 +202,9 @@ while True:
 
         pygame.display.update()
 
+
         # Check if any of the baddies have hit the player.
-        if playerHasHitBaddie(playerRect, baddies):
+        if playerHasHitBaddie(playerRect, baddies) or playerRect.top > WINDOWHEIGHT:
             if score > topScore:
                 topScore = score # set new top score
             break
